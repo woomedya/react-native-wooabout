@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { FlatList, StyleSheet, Text, View, Dimensions, TouchableOpacity, Linking, Platform } from 'react-native';
-import * as notificationApi from '../apis/aboutApi';
+import * as itemApi from '../apis/aboutApi';
 import i18n from '../locales';
 import ItemCard from './ItemCard';
 import NoDataText from './NoDataText';
 import opts from '../../config';
 import * as langStore from '../store/language';
 import { Image } from "react-native-elements";
-import TimeoutAvatar from 'react-native-wooabout/src/components/TimeoutAvatar';
 import DeviceInfo from 'react-native-device-info';
 
 const logowoo = require("../assets/woomedyalogo.png")
@@ -16,10 +15,10 @@ export default class AboutPage extends Component {
         super(props)
         this.props = props;
         this.defaultLang = 'tr';
-
+        this.counterIndex = 0;
         this.state = {
             i18n: i18n(),
-            notificationsList: [],
+            itemList: [],
             initial: false,
             refreshing: false,
             description: null,
@@ -28,7 +27,6 @@ export default class AboutPage extends Component {
 
     componentDidMount() {
         this.refresh();
-
         langStore.default.addListener(langStore.LANG, this.langChanged);
     }
 
@@ -41,13 +39,13 @@ export default class AboutPage extends Component {
             initial: false
         });
 
-        var notificationsList = await this.getNotificationList();
-        this.defaultLang = notificationsList[0].defaultLang;
-        var description = notificationsList.map(x => x.items)[0].map(x => x.title[opts.lang] || x.title[this.defaultLang] == DeviceInfo.getApplicationName() ? x.description : null).filter(x => x != null)[0];
+        var itemList = await this.getItemList();
+        this.defaultLang = itemList[0].defaultLang;
+        var description = itemList.map(x => x.items)[0].map(x => x.title[opts.lang] || x.title[this.defaultLang] == DeviceInfo.getApplicationName() ? x.description : null).filter(x => x != null)[0];
         var descriptionLang = description[opts.lang] || description[this.defaultLang];
 
         this.setState({
-            notificationsList,
+            itemList,
             initial: true,
             refreshing: false,
             description: descriptionLang
@@ -58,11 +56,13 @@ export default class AboutPage extends Component {
         this.setState({
             i18n: i18n()
         });
+        this.defaultLang = langStore.getLanguage();
     }
 
-    getNotificationList = async () => {
+    getItemList = async () => {
+
         var lang = langStore.getLanguage();
-        return await notificationApi.getNotificationList({ lang });
+        return await itemApi.getItemList({ lang });
     }
 
     openDetail = (url) => {
@@ -88,31 +88,37 @@ export default class AboutPage extends Component {
             message={item.message[opts.lang] || item.message[this.defaultLang]}
             image={item.image[opts.lang] || item.image[this.defaultLang]}
             onpress={this.openDetail}
-            urlDescription={this.state.i18n.notification.urlDescription}
+            urlDescription={this.state.i18n.item.urlDescription}
         />
     }
-    renderCategory = ({ item }) => {
-        return item.items ? <View  >
-            <View style={{
-                flexDirection: "row", justifyContent: "space-between",
-                backgroundColor: "#fff", marginTop: 15, paddingVertical: 10, paddingHorizontal: 5, marginHorizontal: 5
-            }}>
-                <Text style={styles.titleStyle}>{item.title[opts.lang] || item.title[this.defaultLang]}</Text>
-                {(Platform.OS == 'ios' ? item.link.ios : item.link.android) ? <TouchableOpacity onPress={() => this.openLink(Platform.OS == 'ios' ? item.link.ios : item.link.android)}>
-                    <Text style={styles.subTextStyleMin}>{this.state.i18n.all}</Text>
+    renderCategory = ({ item, index }) => {
+
+        item.items ? this.counterIndex = this.counterIndex + 1 : null;
+
+        return item.items ? <View style={[this.counterIndex % 2 == 0 ? { backgroundColor: "#fff" } : { backgroundColor: "#f2f2f2" }]}>
+            <View style={[this.counterIndex % 2 == 0 ? { backgroundColor: "#f2f2f2" } : { backgroundColor: "#fff" }, { borderTopRightRadius: 20, borderTopLeftRadius: 20, }]}>
+                <View style={styles.katagoriHeader}>
+                    <Text style={styles.titleStyle}>{item.title[opts.lang].toUpperCase() || item.title[this.defaultLang].toUpperCase()}</Text>
+
+                </View>
+                <FlatList
+                    numColumns={1}
+                    keyExtractor={this.itemKey}
+                    refreshing={this.state.refreshing}
+                    onRefresh={this.handleRefresh}
+                    data={item.items}
+                    initialNumToRender={4}
+                    horizontal
+                    style={styles.itemlist}
+                    renderItem={this.renderItem}
+                />
+                {(Platform.OS == 'ios' ? item.link.ios : item.link.android) ? <TouchableOpacity style={{ padding: 22, }} onPress={() => this.openLink(Platform.OS == 'ios' ? item.link.ios : item.link.android)}>
+                    <Text style={[styles.styleTumunuGoster]}>{this.state.i18n.all.toUpperCase()}</Text>
+                    <Text style={[styles.styleLine]}></Text>
+
                 </TouchableOpacity> : null}
+
             </View>
-            <FlatList
-                numColumns={1}
-                keyExtractor={this.itemKey}
-                refreshing={this.state.refreshing}
-                onRefresh={this.handleRefresh}
-                data={item.items}
-                initialNumToRender={4}
-                horizontal
-                style={styles.itemlist}
-                renderItem={this.renderItem}
-            />
         </View> : null
     }
 
@@ -121,67 +127,65 @@ export default class AboutPage extends Component {
     }
 
     renderNoText = () => {
-        return opts.renderNoText ? opts.renderNoText(this.state.notificationsList.length == 0) : <NoDataText
-            visible={this.state.notificationsList.length == 0}
-            text={this.state.i18n.notification.noData} />
+        return opts.renderNoText ? opts.renderNoText(this.state.itemList.length == 0) : <NoDataText
+            visible={this.state.itemList.length == 0}
+            text={this.state.i18n.item.noData} />
     }
 
     footerComponent = () => {
-        return <TouchableOpacity onPress={() => this.openLink(this.state.i18n.webUrl)} style={{ flexDirection: "row", backgroundColor: "#fff", marginTop: 20, padding: 10 }}>
+        return <TouchableOpacity onPress={() => this.openLink(this.state.i18n.webUrl)} style={styles.fooderContainer}>
             <Image
                 resizeMode="center"
                 source={logowoo}
                 style={[styles.imageStyleFooter]}
             />
-            <View style={{ flexDirection: "column", flex: 1, alignSelf: "center" }}>
-                <Text numberOfLines={3} ellipsizeMode='tail' style={[styles.titleStyle, { textAlign: "center" }]}>Woo Medya Dijital Reklamcı</Text>
-                <Text numberOfLines={2} ellipsizeMode='tail' style={[styles.subtitleStyle, { textAlign: "center" }]}>www.woomedya.com.tr</Text>
 
-            </View>
         </TouchableOpacity>
+    }
+
+    headerComponent = () => {
+        return <View style={styles.headerContainer}>
+            <View style={{ alignItems: "center" }}>
+
+                <View style={styles.imageContainerHeader}>
+                    <Image
+                        resizeMode="contain"
+                        source={opts.logo}
+                        style={styles.imageStyle}
+                    />
+                </View>
+                <View style={styles.headerContainerText}>
+                    <Text style={[styles.titleStyle,]}> {DeviceInfo.getApplicationName().toUpperCase()}</Text>
+                    <Text style={[styles.subtitleStyle,]}>Ver :{DeviceInfo.getVersion()}</Text>
+
+                </View>
+            </View>
+
+            <View style={styles.textContainer}>
+                <Text ellipsizeMode='tail' style={styles.containerSubTextStyle}>{this.state.description} </Text>
+            </View>
+        </View>
     }
 
     render() {
         return <View style={styles.container}>
             {this.renderNoText()}
             <View style={styles.flex}>
-                <View style={styles.headerContainer}>
-                    <View style={{ flexDirection: "row", }}>
 
-                        <View style={styles.imageContainerHeader}>
-                            <Image
-                                resizeMode="contain"
-                                source={opts.logo}
-                                style={styles.imageStyle}
-                            />
-                        </View>
-                        <View style={{ flexDirection: "column", flex: 1, alignSelf: "center" }}>
-                            <Text numberOfLines={3} ellipsizeMode='tail' style={[styles.titleStyle, { textAlign: "center" }]}> {DeviceInfo.getApplicationName()}</Text>
-                            <Text numberOfLines={2} ellipsizeMode='tail' style={[styles.subtitleStyle, { textAlign: "center" }]}>Ver :{DeviceInfo.getVersion()}</Text>
-
-                        </View>
-                    </View>
-
-                    <View style={styles.textContainer}>
-                        <Text ellipsizeMode='tail' style={styles.subTextStyle}>{this.state.description} </Text>
-                    </View>
-                </View>
                 <FlatList
-                    contentContainerStyle={{ padding: 5, }}
+                    contentContainerStyle={{}}
                     numColumns={1}
                     keyExtractor={this.itemKey}
                     refreshing={this.state.refreshing}
                     onRefresh={this.handleRefresh}
-                    data={this.state.notificationsList}
+                    data={this.state.itemList}
                     initialNumToRender={4}
                     renderItem={this.renderCategory}
                     style={styles.analist}
                     ListFooterComponent={this.footerComponent}
+                    ListHeaderComponent={this.headerComponent}
                 />
-
             </View>
-
-
         </View>
     }
 }
@@ -195,22 +199,19 @@ const styles = StyleSheet.create({
         paddingTop: 10,
     },
     headerContainer: {
-        marginHorizontal: 10,
         justifyContent: "space-between",
-        padding: 10,
-        paddingBottom: 20,
-        borderWidth: 0.75,
-        borderColor: opts.color.LIGHT_PRIMARY,
-        backgroundColor: "#fff",
+        paddingHorizontal: 40,
+        paddingBottom: 40,
+        paddingTop: 10,
+        backgroundColor: "#F4F4F4",
         overflow: "hidden"
     },
+    headerContainerText: { flexDirection: "column", flex: 1, alignSelf: "center", },
     imageContainerHeader: {
         padding: 2,
         height: 120,
         width: 120,
         overflow: "hidden",
-        backgroundColor: "#fff",
-        backgroundColor: opts.color.PRIMARY
     },
 
     textContainer: {
@@ -218,6 +219,10 @@ const styles = StyleSheet.create({
     },
     imageStyle: {
         height: "100%"
+    },
+    katagoriHeader: {
+        flexDirection: "row", justifyContent: "center",
+        paddingVertical: 10, paddingHorizontal: 5,
     },
     imageStyleFooter: {
         height: 75,
@@ -227,20 +232,37 @@ const styles = StyleSheet.create({
     },
     titleStyle: {
         color: '#000000',
-        paddingBottom: 5,
         fontSize: 20,
+        padding: 5,
+        textAlign: "center",
+        fontWeight: 'bold'
     },
     subtitleStyle: {
+        textAlign: "center",
         color: "#000000",
         opacity: 0.5,
-        fontSize: 14,
-        lineHeight: 16
-    },
-    subTextStyle: {
+        fontWeight: 'bold',
+        paddingBottom: 5,
         fontSize: 14,
     },
-    subTextStyleMin: {
-        fontSize: 10,
+    containerSubTextStyle: {
+        fontSize: 14,
+        textAlign: "center",
+    },
+
+    styleTumunuGoster: {
+        fontSize: 12,
+        textAlign: "center",
+        color: "#afafaf",
+        borderBottomColor: "#afafaf",
+    },
+    styleLine: {
+        backgroundColor: "#c1c1c1",
+        alignSelf: "center",
+        textAlign: "center",
+        width: 100,
+        top: 3,
+        height: 2,
     },
     analist: {
         height: 'auto'
@@ -249,5 +271,6 @@ const styles = StyleSheet.create({
     itemlist: {
         marginTop: -10,
         height: 'auto'
-    }
+    },
+    fooderContainer: { alignSelf: "center", flexDirection: "row", marginTop: 20, padding: 10 },
 });

@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Dimensions } from "react-native";
-import { Image } from "react-native-elements";
+import { Image, Icon } from "react-native-elements";
 import TimeAgo from 'react-native-timeago';
 import TimeoutAvatar from './TimeoutAvatar';
 import opts from '../../config';
 
 const width = Dimensions.get('window').width;
+const hatafoto = require("../assets/hatafoto.png")
 
 export default class ItemCard extends Component {
     constructor(props) {
@@ -24,26 +25,24 @@ export default class ItemCard extends Component {
                 <TouchableOpacity onPress={this.onpress} style={this.props.type != "photo" ? styles.container : styles.containerPhoto}>
                     {
                         this.props.image ? <View style={styles.imageContainer}>
-                            <Image
-                                style={styles.imageBlur}
-                                source={{ uri: this.props.image }}
-                                blurRadius={20}
-                                resizeMode="stretch" />
+
                             <TimeoutAvatar
                                 resizeMode="contain"
                                 source={{ uri: this.props.image }}
-                                logo={opts.logo}
-                                style={styles.image}
+                                logo={hatafoto}
+                                style={styles.imageTimeAvatar}
                             />
                         </View> :
-                            <View style={styles.imageContainer}>
+                            <View style={styles.imageContainerPhoto}>
                                 <Image
-                                    style={styles.imageLogo}
-                                    source={opts.logo}
-                                    resizeMode="stretch" />
+                                    style={styles.imageLogoPhoto}
+                                    source={this.props.image}
+                                    resizeMode="contain" />
                             </View>
                     }
-                    {this.props.type == "photo" ? <Text numberOfLines={2} ellipsizeMode='tail' style={styles.titleStylePhoto}>{this.props.title ? this.props.title : ""}</Text> : null}
+                    {/* TODO : resimlerin title kapattım tasarıma göre
+                    {this.props.type == "photo" ? <Text numberOfLines={2} ellipsizeMode='tail' style={styles.titleStylePhoto}>{this.props.title ? this.props.title : ""}</Text> : null} 
+                    */}
 
                     {this.props.type != "photo" ? <View style={styles.textContainer}>
                         <View style={styles.bodyContent}>
@@ -54,6 +53,12 @@ export default class ItemCard extends Component {
                             {
                                 this.props.url ? <View style={styles.continueContainer}>
                                     <Text style={styles.continue}>{this.props.urlDescription}</Text>
+                                    <Icon
+                                        name='keyboard-arrow-right'
+                                        type='MaterialIcons'
+                                        size={17}
+                                        color={"#00000060"}
+                                    />
                                 </View> : null
                             }
                         </View>
@@ -74,46 +79,60 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         marginHorizontal: 5,
         justifyContent: "space-between",
-        width: 185,
-        height: 185,
-        borderWidth: 0.75,
-        borderColor: opts.color.LIGHT_PRIMARY,
-        overflow: "hidden"
+        width: 160,
+
+        borderRadius: 15,
     },
     container: {
         backgroundColor: "#fff",
-        marginHorizontal: 5,
+        margin: 10,
         justifyContent: "space-between",
-        width: 185,
-        height: 260,
-        borderWidth: 0.75,
-        borderColor: opts.color.LIGHT_PRIMARY,
-        overflow: "hidden"
+        width: 160,
+        height: 275,
+
+        shadowColor: "#afafaf",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.30,
+        shadowRadius: 4.65,
+
+        elevation: 8,
     },
+
     imageContainer: {
-        flex: 4,
+
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: opts.color.PRIMARY
+        overflow: "hidden",
+        borderRadius: 15,
+        height: 160,
+        width: 160,
+    },
+    imageContainerPhoto: {
+
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: "hidden",
+        borderRadius: 15,
     },
     textContainer: {
-        flex: 5,
-    },
-    imageLogo: {
-        height: 90,
-        width: 100,
-        justifyContent: 'center',
-        tintColor: '#FFFFFF'
-    },
-    imageBlur: {
-        height: '100%',
-        width: width / 2,
         flex: 1,
+        justifyContent: "space-between",
     },
-    image: {
+    imageLogoPhoto: {
+        height: 100,
+        width: 160,
+        justifyContent: 'center',
+        tintColor: '#FFFFFF',
+    },
+
+    imageTimeAvatar: {
         position: "absolute",
-        width: width / 2,
-        height: "100%"
+        width: 160,
+        height: 160,
+
     },
     bodyContent: {
         justifyContent: "flex-start",
@@ -126,6 +145,7 @@ const styles = StyleSheet.create({
         color: '#000000',
         paddingBottom: 5,
         fontSize: 18,
+        fontWeight: "600"
     },
     titleStylePhoto: {
         textAlign: "center",
@@ -142,22 +162,17 @@ const styles = StyleSheet.create({
     },
     actionBody: {
         flexDirection: "row",
-        justifyContent: "flex-end",
-        paddingTop: 5,
         paddingHorizontal: 5,
     },
-    dateContainer: {
-        height: 36,
-    },
-    date: {
-        color: opts.color.PRIMARY,
-        fontSize: 12
-    },
+
     continueContainer: {
-        height: 36,
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        paddingVertical: 5,
     },
     continue: {
-        color: opts.color.PRIMARY,
-        fontSize: 12
+        color: "#00000080",
+        fontSize: 10
     }
 });

@@ -1,14 +1,14 @@
 export default {
-    notification: {
+    item: {
         urlDescription: 'Show ...',
-        noData: 'There are no notifications.'
+        noData: 'There are no App.'
     },
     alertbox: {
         done: 'Done',
         show: 'Go'
     },
     settings: {
-        changeNotificationStatus: 'Notifications'
+        changeNotificationStatus: 'Apps'
     },
 
 

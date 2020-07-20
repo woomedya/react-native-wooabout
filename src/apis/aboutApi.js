@@ -30,7 +30,7 @@ const baseRequest = async (url, type, obj = {}) => {
     }
 }
 
-export const getNotificationList = async ({ lang, } = { lang: null }) => {
+export const getItemList = async ({ lang, } = { lang: null }) => {
     var result = await baseRequest('/content/export', 'content.export', {
         tags: [lang],
         tableName: "About"

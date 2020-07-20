@@ -1,6 +1,6 @@
 export default {
-    notification: {
-        urlDescription: 'Göster ...',
+    item: {
+        urlDescription: 'Detay Göster ...',
         noData: 'Bildirim bulunmamaktadır.',
     },
     alertbox: {

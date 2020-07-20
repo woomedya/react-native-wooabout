@@ -5,7 +5,7 @@ import opts from '../../config';
 var logo = null;
 
 export default class TimeoutAvatar extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props)
         this.props = props;
 
@@ -61,22 +61,22 @@ export default class TimeoutAvatar extends Component {
         return (
             source ?
                 <FastImage
-                    key={ source.uri }
-                    style={ this.props.style }
-                    onError={ this.onErrorHandler.bind(this) }
-                    source={ this.state.hasError ? logo :
+                    key={source.uri}
+                    style={this.props.style}
+                    onError={this.onErrorHandler.bind(this)}
+                    source={this.state.hasError ? logo :
                         {
                             uri: source.uri,
                             headers: { Authorization: source.uri },
                             priority: FastImage.priority.normal,
                             cache: FastImage.cacheControl.immutable,
-                        } }
-                    resizeMode={ this.props.resizeMode ? this.props.resizeMode : FastImage.resizeMode.stretch }
+                        }}
+                    resizeMode={this.props.resizeMode ? this.props.resizeMode : FastImage.resizeMode.stretch}
 
                 /> : <FastImage
-                    style={ [this.props.style, { backgroundColor: opts.color.PRIMARY }] }
-                    source={ logo }
-                    resizeMode={ this.props.resizeMode ? this.props.resizeMode : FastImage.resizeMode.center } />
+                    style={[this.props.style,]}
+                    source={logo}
+                    resizeMode={this.props.resizeMode ? this.props.resizeMode : FastImage.resizeMode.center} />
         );
     }
 
