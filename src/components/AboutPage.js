@@ -109,8 +109,8 @@ export default class AboutPage extends Component {
 
                 </View>
                 <FlatList
+                    keyExtractor={(item, index) => index.toString()}
                     numColumns={1}
-                    keyExtractor={this.itemKey}
                     refreshing={this.state.refreshing}
                     onRefresh={this.handleRefresh}
                     data={item.items}
@@ -178,7 +178,7 @@ export default class AboutPage extends Component {
                 <FlatList
                     contentContainerStyle={{}}
                     numColumns={1}
-                    keyExtractor={this.itemKey}
+                    keyExtractor={(item, index) => index.toString()}
                     refreshing={this.state.refreshing}
                     onRefresh={this.handleRefresh}
                     data={this.state.itemList}
