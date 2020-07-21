@@ -2,7 +2,7 @@ import * as storeUtil from 'jutore';
 import opts from '../../config';
 
 var store = storeUtil.setScope('woosocial_language', {
-    lang: ''
+    lang: '',
 });
 
 export const LANG = 'lang';

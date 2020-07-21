@@ -1,7 +1,7 @@
 export default {
     item: {
         urlDescription: 'Detay Göster ...',
-        noData: 'Bildirim bulunmamaktadır.',
+        noData: 'Uygulamalar bulunmamaktadır.',
     },
     alertbox: {
         done: 'Tamam',

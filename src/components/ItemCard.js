@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
         margin: 10,
         justifyContent: "space-between",
         width: 160,
-        height: 275,
+        height: 295,
 
         shadowColor: "#afafaf",
         shadowOffset: {

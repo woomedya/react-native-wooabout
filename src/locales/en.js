@@ -1,7 +1,7 @@
 export default {
     item: {
         urlDescription: 'Show ...',
-        noData: 'There are no App.'
+        noData: 'There are no applications.'
     },
     alertbox: {
         done: 'Done',

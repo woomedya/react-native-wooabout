@@ -14,7 +14,7 @@ export default class AboutPage extends Component {
     constructor(props) {
         super(props)
         this.props = props;
-        this.defaultLang = 'tr';
+        this.defaultLang = 'en';
         this.counterIndex = 0;
         this.state = {
             i18n: i18n(),
@@ -22,6 +22,7 @@ export default class AboutPage extends Component {
             initial: false,
             refreshing: false,
             description: null,
+            itemTitle: ''
         };
     }
 
@@ -40,15 +41,21 @@ export default class AboutPage extends Component {
         });
 
         var itemList = await this.getItemList();
+
         this.defaultLang = itemList[0].defaultLang;
-        var description = itemList.map(x => x.items)[0].map(x => x.title[opts.lang] || x.title[this.defaultLang] == DeviceInfo.getApplicationName() ? x.description : null).filter(x => x != null)[0];
-        var descriptionLang = description[opts.lang] || description[this.defaultLang];
+
+        var description = itemList.map(x => x.items)[0].map(x => x.applicationId == opts.applicationId ? x.description : null).filter(y => y != null)[0];
+        var itemLang = itemList.map(x => x.items)[0].map(x => x.applicationId == opts.applicationId ? x.lang : null).filter(y => y != null);
+        var itemTitle = itemList.map(x => x.items)[0].map(x => x.applicationId == opts.applicationId ? x.title : null).filter(y => y != null)[0];
+        var descriptionLang = description[opts.lang] || description[itemLang];
+        itemTitle = itemTitle[opts.lang] || itemTitle[itemLang]
 
         this.setState({
             itemList,
             initial: true,
             refreshing: false,
-            description: descriptionLang
+            description: descriptionLang,
+            itemTitle
         });
     }
 
@@ -56,7 +63,7 @@ export default class AboutPage extends Component {
         this.setState({
             i18n: i18n()
         });
-        this.defaultLang = langStore.getLanguage();
+
     }
 
     getItemList = async () => {
@@ -77,6 +84,13 @@ export default class AboutPage extends Component {
 
     }
 
+    turkishToUpper = (value) => {
+        var string = value;
+        var letters = { "i": "İ", "ş": "Ş", "ğ": "Ğ", "ü": "Ü", "ö": "Ö", "ç": "Ç", "ı": "I" };
+        string = string.replace(/(([iışğüçö]))/g, function (letter) { return letters[letter]; })
+        return string.toUpperCase();
+    }
+
     handleRefresh = () => {
         this.setState({
             refreshing: true
@@ -91,9 +105,9 @@ export default class AboutPage extends Component {
         return <ItemCard
             type={item.type}
             url={Platform.OS == 'ios' ? item.link.ios : item.link.android}
-            title={item.title[opts.lang] || item.title[this.defaultLang]}
-            message={item.message[opts.lang] || item.message[this.defaultLang]}
-            image={item.image[opts.lang] || item.image[this.defaultLang]}
+            title={item.title[opts.lang] || item.title[item.lang]}
+            message={item.message[opts.lang] || item.message[item.lang]}
+            image={item.image[opts.lang] || item.image[item.lang]}
             onpress={() => this.openDetail(Platform.OS == "android" ? item.link.android : item.link.ios)}
             urlDescription={this.state.i18n.item.urlDescription}
         />
@@ -105,7 +119,7 @@ export default class AboutPage extends Component {
         return item.items ? <View style={[this.counterIndex % 2 == 0 ? { backgroundColor: "#fff" } : { backgroundColor: "#f2f2f2" }]}>
             <View style={[this.counterIndex % 2 == 0 ? { backgroundColor: "#f2f2f2" } : { backgroundColor: "#fff" }, { borderTopRightRadius: 20, borderTopLeftRadius: 20, }]}>
                 <View style={styles.katagoriHeader}>
-                    <Text style={styles.titleStyle}>{item.title[opts.lang].toUpperCase() || item.title[this.defaultLang].toUpperCase()}</Text>
+                    <Text style={styles.titleStyle}>{item.title[opts.lang] ? this.turkishToUpper(item.title[opts.lang]) : this.turkishToUpper(item.title[this.defaultLang])}</Text>
 
                 </View>
                 <FlatList
@@ -120,7 +134,7 @@ export default class AboutPage extends Component {
                     renderItem={this.renderItem}
                 />
                 {(Platform.OS == 'ios' ? item.link.ios : item.link.android) ? <TouchableOpacity style={{ padding: 22, }} onPress={() => this.openDetail(Platform.OS == 'ios' ? item.link.ios : item.link.android)}>
-                    <Text style={[styles.styleTumunuGoster]}>{this.state.i18n.all.toUpperCase()}</Text>
+                    <Text style={[styles.styleTumunuGoster]}>{this.turkishToUpper(this.state.i18n.all)}</Text>
                     <Text style={[styles.styleLine]}></Text>
 
                 </TouchableOpacity> : null}
@@ -158,7 +172,7 @@ export default class AboutPage extends Component {
                     />
                 </View>
                 <View style={styles.headerContainerText}>
-                    <Text style={[styles.titleStyle,]}> {DeviceInfo.getApplicationName().toUpperCase()}</Text>
+                    <Text style={[styles.titleStyle,]}> {this.state.itemTitle}</Text>
                     <Text style={[styles.subtitleStyle,]}>Ver :{DeviceInfo.getVersion()}</Text>
 
                 </View>
@@ -167,12 +181,13 @@ export default class AboutPage extends Component {
             <View style={styles.textContainer}>
                 <Text ellipsizeMode='tail' style={styles.containerSubTextStyle}>{this.state.description} </Text>
             </View>
+
         </View>
     }
 
     render() {
         return <View style={styles.container}>
-            {this.renderNoText()}
+
             <View style={styles.flex}>
 
                 <FlatList
