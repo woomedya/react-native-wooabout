@@ -8,6 +8,7 @@ import opts from '../../config';
 import * as langStore from '../store/language';
 import { Image } from "react-native-elements";
 import DeviceInfo from 'react-native-device-info';
+import TimeoutAvatar from './TimeoutAvatar';
 
 const logowoo = require("../assets/woomedyalogo.png")
 export default class AboutPage extends Component {
@@ -22,7 +23,8 @@ export default class AboutPage extends Component {
             initial: false,
             refreshing: false,
             description: null,
-            itemTitle: ''
+            itemTitle: '',
+            logoImage: ''
         };
     }
 
@@ -49,13 +51,14 @@ export default class AboutPage extends Component {
         var itemTitle = itemList.map(x => x.items)[0].map(x => x.applicationId == opts.applicationId ? x.title : null).filter(y => y != null)[0] || "";
         var descriptionLang = description[opts.lang] || description[itemLang];
         itemTitle = itemTitle[opts.lang] || itemTitle[itemLang]
-
+        var logoImage = itemList[0].logo;
         this.setState({
             itemList,
             initial: true,
             refreshing: false,
             description: descriptionLang,
-            itemTitle
+            itemTitle,
+            logoImage,
         });
     }
 
@@ -151,11 +154,12 @@ export default class AboutPage extends Component {
 
     footerComponent = () => {
         return <TouchableOpacity onPress={() => this.openDetail(this.state.i18n.webUrl)} style={styles.fooderContainer}>
-            <Image
-                resizeMode="center"
-                source={logowoo}
+            <TimeoutAvatar
+                resizeMode="contain"
+                source={{ uri: this.state.logoImage }}
                 style={[styles.imageStyleFooter]}
             />
+
 
         </TouchableOpacity>
     }
@@ -244,7 +248,7 @@ const styles = StyleSheet.create({
     },
     imageStyleFooter: {
         height: 75,
-        width: 75,
+        width: "80%",
         overflow: "hidden",
     },
     titleStyle: {
