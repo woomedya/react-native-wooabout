@@ -119,7 +119,7 @@ export default class AboutPage extends Component {
         return item.items ? <View style={[this.counterIndex % 2 == 0 ? { backgroundColor: "#fff" } : { backgroundColor: "#f2f2f2" }]}>
             <View style={[this.counterIndex % 2 == 0 ? { backgroundColor: "#f2f2f2" } : { backgroundColor: "#fff" }, { borderTopRightRadius: 20, borderTopLeftRadius: 20, }]}>
                 <View style={styles.katagoriHeader}>
-                    <Text style={styles.titleStyle}>{item.title[opts.lang] ? this.turkishToUpper(item.title[opts.lang]) : this.turkishToUpper(item.title[this.defaultLang])}</Text>
+                    <Text style={styles.titleStyle}>{item.title[opts.lang] ? item.title[opts.lang] : item.title[this.defaultLang]}</Text>
 
                 </View>
                 <FlatList
@@ -172,7 +172,7 @@ export default class AboutPage extends Component {
                     />
                 </View>
                 <View style={styles.headerContainerText}>
-                    <Text style={[styles.titleStyle,]}> {this.turkishToUpper(this.state.itemTitle)}</Text>
+                    <Text style={[styles.titleStyle,]}> {this.state.itemTitle}</Text>
                     <Text style={[styles.subtitleStyle,]}>Ver :{DeviceInfo.getVersion()}</Text>
 
                 </View>
