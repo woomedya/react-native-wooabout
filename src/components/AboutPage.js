@@ -230,8 +230,7 @@ const styles = StyleSheet.create({
     imageStyleFooter: {
         height: 75,
         width: 75,
-        alignSelf: "center",
-        overflow: "hidden"
+        overflow: "hidden",
     },
     titleStyle: {
         color: '#000000',
@@ -275,5 +274,12 @@ const styles = StyleSheet.create({
         marginTop: -10,
         height: 'auto'
     },
-    fooderContainer: { alignSelf: "center", flexDirection: "row", marginTop: 20, padding: 10, backgroundColor: "#fff" },
+    fooderContainer: {
+        flex: 1,
+        justifyContent: "center",
+        flexDirection: "row",
+        marginTop: 20,
+        padding: 10,
+        backgroundColor: "#fff"
+    },
 });
