@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, StyleSheet, Text, View, Dimensions, TouchableOpacity, Linking, Platform } from 'react-native';
+import { FlatList, StyleSheet, Text, View, TouchableOpacity, Linking, Platform } from 'react-native';
 import * as itemApi from '../apis/aboutApi';
 import i18n from '../locales';
 import ItemCard from './ItemCard';
@@ -66,8 +66,15 @@ export default class AboutPage extends Component {
     }
 
     openDetail = (url) => {
-        if (this.props.openDetail)
-            this.props.openDetail(url);
+        if (url.trim())
+            Linking.canOpenURL(url.trim()).then(supported => {
+                if (supported) {
+                    Linking.openURL(url.trim());
+                } else {
+                    console.log("Don't know how to open URI: " + url.trim());
+                }
+            });
+
     }
 
     handleRefresh = () => {
@@ -87,7 +94,7 @@ export default class AboutPage extends Component {
             title={item.title[opts.lang] || item.title[this.defaultLang]}
             message={item.message[opts.lang] || item.message[this.defaultLang]}
             image={item.image[opts.lang] || item.image[this.defaultLang]}
-            onpress={this.openDetail}
+            onpress={() => this.openDetail(Platform.OS == "android" ? item.link.android : item.link.ios)}
             urlDescription={this.state.i18n.item.urlDescription}
         />
     }
@@ -112,7 +119,7 @@ export default class AboutPage extends Component {
                     style={styles.itemlist}
                     renderItem={this.renderItem}
                 />
-                {(Platform.OS == 'ios' ? item.link.ios : item.link.android) ? <TouchableOpacity style={{ padding: 22, }} onPress={() => this.openLink(Platform.OS == 'ios' ? item.link.ios : item.link.android)}>
+                {(Platform.OS == 'ios' ? item.link.ios : item.link.android) ? <TouchableOpacity style={{ padding: 22, }} onPress={() => this.openDetail(Platform.OS == 'ios' ? item.link.ios : item.link.android)}>
                     <Text style={[styles.styleTumunuGoster]}>{this.state.i18n.all.toUpperCase()}</Text>
                     <Text style={[styles.styleLine]}></Text>
 
@@ -120,10 +127,6 @@ export default class AboutPage extends Component {
 
             </View>
         </View> : null
-    }
-
-    openLink = (link) => {
-        Linking.openURL(link);
     }
 
     renderNoText = () => {
@@ -272,5 +275,5 @@ const styles = StyleSheet.create({
         marginTop: -10,
         height: 'auto'
     },
-    fooderContainer: { alignSelf: "center", flexDirection: "row", marginTop: 20, padding: 10 },
+    fooderContainer: { alignSelf: "center", flexDirection: "row", marginTop: 20, padding: 10, backgroundColor: "#fff" },
 });
