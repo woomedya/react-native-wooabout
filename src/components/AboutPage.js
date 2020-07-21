@@ -212,8 +212,8 @@ const styles = StyleSheet.create({
     headerContainerText: { flexDirection: "column", flex: 1, alignSelf: "center", },
     imageContainerHeader: {
         padding: 2,
-        height: 120,
-        width: 120,
+        height: 100,
+        width: "100%",
         overflow: "hidden",
     },
 
