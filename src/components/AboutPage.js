@@ -172,7 +172,7 @@ export default class AboutPage extends Component {
                     />
                 </View>
                 <View style={styles.headerContainerText}>
-                    <Text style={[styles.titleStyle,]}> {this.state.itemTitle}</Text>
+                    <Text style={[styles.titleStyle,]}> {this.turkishToUpper(this.state.itemTitle)}</Text>
                     <Text style={[styles.subtitleStyle,]}>Ver :{DeviceInfo.getVersion()}</Text>
 
                 </View>
