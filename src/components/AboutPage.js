@@ -136,7 +136,7 @@ export default class AboutPage extends Component {
     }
 
     footerComponent = () => {
-        return <TouchableOpacity onPress={() => this.openLink(this.state.i18n.webUrl)} style={styles.fooderContainer}>
+        return <TouchableOpacity onPress={() => this.openDetail(this.state.i18n.webUrl)} style={styles.fooderContainer}>
             <Image
                 resizeMode="center"
                 source={logowoo}
