@@ -44,9 +44,9 @@ export default class AboutPage extends Component {
 
         this.defaultLang = itemList[0].defaultLang;
 
-        var description = itemList.map(x => x.items)[0].map(x => x.applicationId == opts.applicationId ? x.description : null).filter(y => y != null)[0];
-        var itemLang = itemList.map(x => x.items)[0].map(x => x.applicationId == opts.applicationId ? x.lang : null).filter(y => y != null);
-        var itemTitle = itemList.map(x => x.items)[0].map(x => x.applicationId == opts.applicationId ? x.title : null).filter(y => y != null)[0];
+        var description = itemList.map(x => x.items)[0].map(x => x.applicationId == opts.applicationId ? x.description : null).filter(y => y != null)[0] || '';
+        var itemLang = itemList.map(x => x.items)[0].map(x => x.applicationId == opts.applicationId ? x.lang : null).filter(y => y != null) || "";
+        var itemTitle = itemList.map(x => x.items)[0].map(x => x.applicationId == opts.applicationId ? x.title : null).filter(y => y != null)[0] || "";
         var descriptionLang = description[opts.lang] || description[itemLang];
         itemTitle = itemTitle[opts.lang] || itemTitle[itemLang]
 
