@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Dimensions } from "react-native";
 import { Image, Icon } from "react-native-elements";
-import TimeAgo from 'react-native-timeago';
 import TimeoutAvatar from './TimeoutAvatar';
 import opts from '../../config';
 
