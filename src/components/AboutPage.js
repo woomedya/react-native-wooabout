@@ -214,7 +214,8 @@ export default class AboutPage extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: "#F4F4F4",
     },
     flex: {
         flex: 1,
