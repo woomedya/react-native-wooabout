@@ -16,7 +16,7 @@ export default class AboutPage extends Component {
         super(props)
         this.props = props;
         this.defaultLang = 'en';
-        this.counterIndex = 0;
+        this.counterIndex = -1;
         this.state = {
             i18n: i18n(),
             itemList: [],
