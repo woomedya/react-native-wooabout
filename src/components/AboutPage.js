@@ -105,7 +105,7 @@ export default class AboutPage extends Component {
     }
 
     renderItem = ({ item }) => {
-        return <ItemCard
+        return item.applicationId != opts.applicationId ? <ItemCard
             type={item.type}
             url={Platform.OS == 'ios' ? item.link.ios : item.link.android}
             title={item.title[opts.lang] || item.title[item.lang]}
@@ -113,7 +113,7 @@ export default class AboutPage extends Component {
             image={item.image[opts.lang] || item.image[item.lang]}
             onpress={() => this.openDetail(Platform.OS == "android" ? item.link.android : item.link.ios)}
             urlDescription={this.state.i18n.item.urlDescription}
-        />
+        /> : null
     }
     renderCategory = ({ item, index }) => {
 
