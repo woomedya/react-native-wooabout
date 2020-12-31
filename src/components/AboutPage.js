@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, StyleSheet, Text, View, TouchableOpacity, Linking, Platform } from 'react-native';
+import { FlatList, StyleSheet, Text, View, TouchableOpacity, Linking, Platform, Alert } from 'react-native';
 import * as itemApi from '../apis/aboutApi';
 import i18n from '../locales';
 import ItemCard from './ItemCard';
@@ -9,6 +9,9 @@ import * as langStore from '../store/language';
 import { Image } from "react-native-elements";
 import DeviceInfo from 'react-native-device-info';
 import TimeoutAvatar from './TimeoutAvatar';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { color } from '../constants/theme';
+import Clipboard from '@react-native-community/clipboard';
 
 const logowoo = require("../assets/woomedyalogo.png")
 export default class AboutPage extends Component {
@@ -164,6 +167,18 @@ export default class AboutPage extends Component {
         </TouchableOpacity>
     }
 
+    copyDeviceId = () => {
+        Clipboard.setString(opts.deviceId);
+
+        Alert.alert(
+            this.state.i18n.copiedTitle,
+            this.state.i18n.copied,
+            [
+                { text: this.state.i18n.ok },
+            ],
+        );
+    }
+
     headerComponent = () => {
         return <View style={styles.headerContainer}>
             <View style={{ alignItems: "center" }}>
@@ -183,7 +198,16 @@ export default class AboutPage extends Component {
             </View>
 
             <View style={styles.textContainer}>
-                <Text ellipsizeMode='tail' style={styles.containerSubTextStyle}>{this.state.description} </Text>
+                <Text ellipsizeMode='tail' style={styles.containerSubTextStyle}>{this.state.description}</Text>
+            </View>
+
+            <View style={styles.deviceIdContainer}>
+                <Text style={styles.deviceId} onPress={this.copyDeviceId} >{this.state.i18n.copyDeviceId}</Text>
+                <MaterialCommunityIcons name={"content-copy"}
+                    color={color.AMERICAN_RIVER}
+                    style={styles.copyDeviceId}
+                    onPress={this.copyDeviceId}
+                />
             </View>
 
         </View>
@@ -191,9 +215,7 @@ export default class AboutPage extends Component {
 
     render() {
         return <View style={styles.container}>
-
             <View style={styles.flex}>
-
                 <FlatList
                     contentContainerStyle={{}}
                     numColumns={1}
@@ -289,7 +311,6 @@ const styles = StyleSheet.create({
     analist: {
         height: 'auto'
     },
-
     itemlist: {
         marginTop: -10,
         height: 'auto'
@@ -302,4 +323,20 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: "#fff"
     },
+    deviceId: {
+        fontSize: 10,
+        paddingTop: 5,
+        paddingBottom: 10,
+        textAlign: "left"
+    },
+    deviceIdContainer: {
+        top: 20,
+        width: "100%",
+        flexDirection: "row",
+        justifyContent: "center"
+    },
+    copyDeviceId: {
+        marginLeft: 5,
+        fontSize: 20
+    }
 });

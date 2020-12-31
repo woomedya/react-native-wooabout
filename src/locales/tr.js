@@ -10,7 +10,9 @@ export default {
     settings: {
         changeNotificationStatus: 'Bildirimler'
     },
-
     all: 'Tümünü Göster',
-    webUrl: 'https://www.woomedya.com.tr'
+    webUrl: 'https://www.woomedya.com.tr',
+    copyDeviceId: "Müşteri iletişim kodunu kopyalamak için tıklayınız.",
+    copied: "Müşteri iletişim kodu kopyalandı.",
+    copiedTitle: "Kod Kopyalandı",
 }

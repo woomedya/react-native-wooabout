@@ -10,8 +10,9 @@ export default {
     settings: {
         changeNotificationStatus: 'Apps'
     },
-
-
-    all: 'All Show',
-    webUrl: 'https://www.woomedya.com.tr'
+    all: 'Show All',
+    webUrl: 'https://www.woomedya.com.tr',
+    copyDeviceId: "Click to copy consumer contact code.",
+    copied: "Consumer contact code copied.",
+    copiedTitle: "Code Copied",
 }

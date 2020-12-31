@@ -11,4 +11,5 @@ export default opts = {
         LIGHT_PRIMARY: '#b9c9d8'
     },
     applicationId: '',
+    deviceId: ''
 };
