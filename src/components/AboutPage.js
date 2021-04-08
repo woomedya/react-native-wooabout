@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, StyleSheet, Text, View, TouchableOpacity, Linking, Platform, Alert } from 'react-native';
+import { FlatList, StyleSheet, Text, View, TouchableOpacity, Linking, Platform, Alert, Clipboard } from 'react-native';
 import * as itemApi from '../apis/aboutApi';
 import i18n from '../locales';
 import ItemCard from './ItemCard';
@@ -11,7 +11,6 @@ import DeviceInfo from 'react-native-device-info';
 import TimeoutAvatar from './TimeoutAvatar';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { color } from '../constants/theme';
-import Clipboard from '@react-native-community/clipboard';
 
 const logowoo = require("../assets/woomedyalogo.png")
 export default class AboutPage extends Component {
